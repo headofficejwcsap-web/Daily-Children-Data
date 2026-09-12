@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>Daily Children's Data Entry</title>
 <style>
 *{box-sizing:border-box}
@@ -210,7 +213,7 @@ th{background:#f3f4f6;position:sticky;top:0;z-index:2}
 <div class="overlay" id="overlay"><div class="loading">Submitting data…</div></div>
 
 <script>
-const FRONTEND_VERSION="2026.09.12-clean-v1";
+const FRONTEND_VERSION="2026.09.12-clean-v2";
 const BACKEND_URL="https://script.google.com/macros/s/AKfycbwmEBrC8rsRxhqvbS7hiJ6XzOdinN2kegrmBXwcPSFT63ny9nU2HZjqyxHPTv9h80Wj/exec";
 const ALL_HOMES=[{"district":"Visakhapatnam","home":"GOVT. CHILDREN HOME FOR BOYS - VISAKHAPATNAM","type":"Government Children Home for Boys"},{"district":"Eluru","home":"GOVT. CHILDREN HOME FOR BOYS - ELURU","type":"Government Children Home for Boys"},{"district":"YSR Kadapa","home":"GOVT. CHILDREN HOME FOR BOYS - YSR KADAPA","type":"Government Children Home for Boys"},{"district":"Tirupati","home":"GOVT. CHILDREN HOME FOR BOYS - TIRUPATHI","type":"Government Children Home for Boys"},{"district":"Visakhapatnam","home":"GOVT. OBSERVATION HOME FOR BOYS - VISAKHAPATNAM","type":"Government Observation Home for Boys"},{"district":"East Godavari","home":"GOVT. OBSERVATION HOME FOR BOYS - Rajahmundry","type":"Government Observation Home for Boys"},{"district":"Eluru","home":"GOVT. OBSERVATION HOME FOR BOYS (Ext) - Eluru","type":"Government Observation Home for Boys (Ext)"},{"district":"NTR","home":"GOVT. OBSERVATION HOME FOR BOYS - Vijayawada","type":"Government Observation Home for Boys"},{"district":"Tirupati","home":"GOVT. OBSERVATION HOME FOR BOYS - Tirupathi","type":"Government Observation Home for Boys"},{"district":"YSR Kadapa","home":"GOVT. OBSERVATION HOME FOR BOYS (Ext) - YSR Kadapa","type":"Government Observation Home for Boys (Ext)"},{"district":"Kurnool","home":"GOVT. OBSERVATION HOME FOR BOYS - Kurnool","type":"Government Observation Home for Boys"},{"district":"Ananthapuramu","home":"GOVT. OBSERVATION HOME FOR BOYS - Ananthapuramu","type":"Government Observation Home for Boys"},{"district":"Visakhapatnam","home":"GOVT. Special HOME FOR BOYS - VISAKHAPATNAM","type":"Government Special Home for Boys"},{"district":"Tirupati","home":"GOVT. Special HOME FOR BOYS - Tirupathi","type":"Government Special Home for Boys"},{"district":"Visakhapatnam","home":"GOVT. Spl cum CHILDREN & Observation HOME FOR Girls - VISAKHAPATNAM","type":"Government Special-cum-Children & Observation Home for Girls"},{"district":"Tirupati","home":"GOVT. Spl cum CHILDREN & Observation HOME FOR Girls - Tirupathi","type":"Government Special-cum-Children & Observation Home for Girls"},{"district":"East Godavari","home":"Shanti Welfare, Open Shelter for Boys, Kovvur, East Godavari","type":"Open Shelter for Boys"},{"district":"Eluru","home":"RIDES, Open Shelter for Boys, Nuzvidu, Eluru","type":"Open Shelter for Boys"},{"district":"Eluru","home":"RIDES, Open Shelter for Girls, Nuzvidu, Eluru","type":"Open Shelter for Girls"},{"district":"NTR","home":"JMJ Open Shelter for Girls, Vijayawada, NTR","type":"Open Shelter for Girls"},{"district":"NTR","home":"SKCV Open Shelter for Boys, Vijayawada, NTR","type":"Open Shelter for Boys"},{"district":"NTR","home":"Navajeevan Balabhavan Open Shelter for Boys, Vijayawada, NTR","type":"Open Shelter for Boys"},{"district":"Guntur","home":"Sri Venkateswara Mahila Mandali,Open Shelter for Boys, Guntur","type":"Open Shelter for Boys"}];
 
@@ -281,10 +284,19 @@ function jsonp(params,timeout=22000){
 
     window[cb]=data=>finish(data,true);
 
+    const normalized={...params};
+
+    // Send both names so either clean backend or an older cached router
+    // can identify the request.
+    if(normalized.api && !normalized.action){
+      normalized.action=normalized.api;
+    }
+
     const q=new URLSearchParams({
-      ...params,
+      ...normalized,
       callback:cb,
-      t:Date.now()
+      t:Date.now(),
+      fv:FRONTEND_VERSION
     });
 
     script.src=BACKEND_URL+'?'+q.toString();
@@ -363,6 +375,24 @@ function fallbackStatus(){
   };
 }
 
+
+function verifyBackendVersion(r){
+  if(!r || !r.version) return true;
+
+  if(r.version!==FRONTEND_VERSION){
+    $('serviceWarn').style.display='block';
+    $('serviceWarn').innerHTML=
+      '<b>Version mismatch.</b> Frontend: '+
+      esc(FRONTEND_VERSION)+
+      ' · Backend: '+
+      esc(r.version)+
+      '. Please hard-refresh this page.';
+    return false;
+  }
+
+  return true;
+}
+
 async function ping(){
   try{
     const r=await jsonp({api:'ping'},12000);
@@ -370,6 +400,8 @@ async function ping(){
     if(!r.ok){
       throw new Error(r.error||'Backend error');
     }
+
+    verifyBackendVersion(r);
 
     setService(
       'ok',
@@ -407,6 +439,8 @@ async function refreshStatus(){
       );
     }
 
+    verifyBackendVersion(r);
+
     $('serviceWarn').style.display='none';
 
     setService(
@@ -420,6 +454,9 @@ async function refreshStatus(){
 
   }catch(e){
     $('serviceWarn').style.display='block';
+    $('serviceWarn').innerHTML=
+      '<b>Live status unavailable.</b> '+
+      esc(e&&e.message?e.message:String(e));
 
     setService(
       'bad',
@@ -585,6 +622,8 @@ async function submitForm(e){
         'Submission failed'
       );
     }
+
+    verifyBackendVersion(r);
 
     $('successBox').textContent=
       r.message||
