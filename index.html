@@ -1,1 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily Children's Data Entry</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f5f7fb;color:#1f2937}
+.top{background:#0f4c81;color:#fff;padding:18px 20px}
+.top h1{margin:0;font-size:23px} .top p{margin:5px 0 0;font-size:13px;opacity:.92}
+.wrap{max-width:1180px;margin:22px auto;padding:0 14px}
+.card{background:#fff;border:1px solid #e1e7ef;border-radius:14px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.statusCard{margin-top:18px}
+.notice,.warn{padding:11px 13px;border-radius:9px;font-size:13px;line-height:1.45;margin-bottom:10px}
+.notice{background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af}
+.warn{background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;display:none}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+label{display:block;margin:12px 0 6px;font-weight:700}
+input,select{width:100%;padding:11px;border:1px solid #cbd5e1;border-radius:8px;background:#fff;font-size:15px}
+input[readonly]{background:#f3f4f6}
+.btn{border:0;border-radius:9px;padding:12px 18px;font-weight:700;cursor:pointer;background:#1d4ed8;color:#fff}
+.btn.secondary{background:#eef2ff;color:#1d4ed8} .btn:disabled{opacity:.55}
+.statusHead{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.chip{padding:7px 10px;border-radius:999px;font-size:13px;font-weight:700;background:#f3f4f6}
+.chip.ok{background:#dcfce7;color:#166534} .chip.pending{background:#fee2e2;color:#991b1b}
+.service{display:flex;gap:8px;align-items:center;font-size:12px;color:#6b7280;margin-top:8px}
+.dotSmall{width:9px;height:9px;border-radius:50%;background:#f59e0b} .dotSmall.ok{background:#16a34a} .dotSmall.bad{background:#dc2626}
+.tablewrap{overflow:auto;max-height:570px;border:1px solid #e5e7eb;border-radius:9px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{padding:9px;border-bottom:1px solid #e5e7eb;text-align:left;vertical-align:top}
+th{background:#f3f4f6;position:sticky;top:0;z-index:2}
+.badge{display:inline-block;padding:5px 8px;border-radius:999px;font-size:11px;font-weight:700}
+.done{background:#dcfce7;color:#166534} .wait{background:#fee2e2;color:#991b1b}
+.groupRow td{background:#eaf2ff;color:#1e3a8a;font-weight:700;border-top:2px solid #93c5fd}
+.groupRow.ngo td{background:#f0fdf4;color:#166534;border-top-color:#86efac}
+.small{font-size:12px;color:#6b7280}
+.toast{position:fixed;right:18px;bottom:18px;max-width:430px;background:#111827;color:#fff;padding:13px 16px;border-radius:10px;display:none;z-index:50;line-height:1.4}
+.overlay{position:fixed;inset:0;background:rgba(15,23,42,.42);display:none;align-items:center;justify-content:center;z-index:40}
+.loading{background:#fff;border-radius:12px;padding:20px 24px;font-weight:700}
+.success{background:#ecfdf5;border:1px solid #a7f3d0;color:#065f46;padding:12px;border-radius:9px;margin-top:12px;display:none}
+.chromeHelp{display:none;margin-top:10px;padding:10px 12px;border:1px solid #fed7aa;background:#fff7ed;color:#9a3412;border-radius:8px;font-size:13px}
+@media(max-width:700px){.row{grid-template-columns:1fr}.wrap{margin:12px auto}.top h1{font-size:20px}th,td{font-size:12px;padding:7px}}
+</style>
+</head>
+<body>
+<div class="top">
+  <h1>Daily Children's Data Entry</h1>
+  <p>Juvenile Welfare, Correctional Services & Welfare of Street Children, A.P.</p>
+</div>
 
+<div class="wrap">
+<section class="card">
+
+<div class="notice">
+  <b>One submission per Home per date.</b>
+  Districts and all 23 Homes are built directly into this page, so the dropdowns are always available.
+</div>
+
+<div class="warn" id="serviceWarn">
+  Live Google Sheet status could not be loaded. The dropdowns will still work.
+  If submission also fails, open this page in Chrome and try once more.
+</div>
+
+<div class="service">
+  <span class="dotSmall" id="serviceDot"></span>
+  <span id="serviceText">Checking data service…</span>
+</div>
+
+<div class="chromeHelp" id="chromeHelp">
+  This appears to be an in-app browser. If submission does not complete, use the browser menu and choose <b>Open in Chrome</b>.
+</div>
+
+<form id="entryForm">
+
+<div class="row">
+  <div>
+    <label>Email *</label>
+    <input id="email" type="email" required autocomplete="email">
+  </div>
+
+  <div>
+    <label>Date *</label>
+    <input id="date" type="date" required>
+  </div>
+</div>
+
+<div class="row">
+  <div>
+    <label>District *</label>
+    <select id="district" required>
+      <option value="">Select District</option>
+      <option value="Ananthapuramu">Ananthapuramu</option>
+<option value="East Godavari">East Godavari</option>
+<option value="Eluru">Eluru</option>
+<option value="Guntur">Guntur</option>
+<option value="Kurnool">Kurnool</option>
+<option value="NTR">NTR</option>
+<option value="Tirupati">Tirupati</option>
+<option value="Visakhapatnam">Visakhapatnam</option>
+<option value="YSR Kadapa">YSR Kadapa</option>
+    </select>
+  </div>
+
+  <div>
+    <label>Home Name *</label>
+    <select id="home" required>
+      <option value="">Select Home</option>
+      <option value="GOVT. CHILDREN HOME FOR BOYS - VISAKHAPATNAM" data-district="Visakhapatnam" data-type="Government Children Home for Boys">GOVT. CHILDREN HOME FOR BOYS - VISAKHAPATNAM</option>
+<option value="GOVT. CHILDREN HOME FOR BOYS - ELURU" data-district="Eluru" data-type="Government Children Home for Boys">GOVT. CHILDREN HOME FOR BOYS - ELURU</option>
+<option value="GOVT. CHILDREN HOME FOR BOYS - YSR KADAPA" data-district="YSR Kadapa" data-type="Government Children Home for Boys">GOVT. CHILDREN HOME FOR BOYS - YSR KADAPA</option>
+<option value="GOVT. CHILDREN HOME FOR BOYS - TIRUPATHI" data-district="Tirupati" data-type="Government Children Home for Boys">GOVT. CHILDREN HOME FOR BOYS - TIRUPATHI</option>
+<option value="GOVT. OBSERVATION HOME FOR BOYS - VISAKHAPATNAM" data-district="Visakhapatnam" data-type="Government Observation Home for Boys">GOVT. OBSERVATION HOME FOR BOYS - VISAKHAPATNAM</option>
+<option value="GOVT. OBSERVATION HOME FOR BOYS - Rajahmundry" data-district="East Godavari" data-type="Government Observation Home for Boys">GOVT. OBSERVATION HOME FOR BOYS - Rajahmundry</option>
+<option value="GOVT. OBSERVATION HOME FOR BOYS (Ext) - Eluru" data-district="Eluru" data-type="Government Observation Home for Boys (Ext)">GOVT. OBSERVATION HOME FOR BOYS (Ext) - Eluru</option>
+<option value="GOVT. OBSERVATION HOME FOR BOYS - Vijayawada" data-district="NTR" data-type="Government Observation Home for Boys">GOVT. OBSERVATION HOME FOR BOYS - Vijayawada</option>
+<option value="GOVT. OBSERVATION HOME FOR BOYS - Tirupathi" data-district="Tirupati" data-type="Government Observation Home for Boys">GOVT. OBSERVATION HOME FOR BOYS - Tirupathi</option>
+<option value="GOVT. OBSERVATION HOME FOR BOYS (Ext) - YSR Kadapa" data-district="YSR Kadapa" data-type="Government Observation Home for Boys (Ext)">GOVT. OBSERVATION HOME FOR BOYS (Ext) - YSR Kadapa</option>
+<option value="GOVT. OBSERVATION HOME FOR BOYS - Kurnool" data-district="Kurnool" data-type="Government Observation Home for Boys">GOVT. OBSERVATION HOME FOR BOYS - Kurnool</option>
+<option value="GOVT. OBSERVATION HOME FOR BOYS - Ananthapuramu" data-district="Ananthapuramu" data-type="Government Observation Home for Boys">GOVT. OBSERVATION HOME FOR BOYS - Ananthapuramu</option>
+<option value="GOVT. Special HOME FOR BOYS - VISAKHAPATNAM" data-district="Visakhapatnam" data-type="Government Special Home for Boys">GOVT. Special HOME FOR BOYS - VISAKHAPATNAM</option>
+<option value="GOVT. Special HOME FOR BOYS - Tirupathi" data-district="Tirupati" data-type="Government Special Home for Boys">GOVT. Special HOME FOR BOYS - Tirupathi</option>
+<option value="GOVT. Spl cum CHILDREN & Observation HOME FOR Girls - VISAKHAPATNAM" data-district="Visakhapatnam" data-type="Government Special-cum-Children & Observation Home for Girls">GOVT. Spl cum CHILDREN & Observation HOME FOR Girls - VISAKHAPATNAM</option>
+<option value="GOVT. Spl cum CHILDREN & Observation HOME FOR Girls - Tirupathi" data-district="Tirupati" data-type="Government Special-cum-Children & Observation Home for Girls">GOVT. Spl cum CHILDREN & Observation HOME FOR Girls - Tirupathi</option>
+<option value="Shanti Welfare, Open Shelter for Boys, Kovvur, East Godavari" data-district="East Godavari" data-type="Open Shelter for Boys">Shanti Welfare, Open Shelter for Boys, Kovvur, East Godavari</option>
+<option value="RIDES, Open Shelter for Boys, Nuzvidu, Eluru" data-district="Eluru" data-type="Open Shelter for Boys">RIDES, Open Shelter for Boys, Nuzvidu, Eluru</option>
+<option value="RIDES, Open Shelter for Girls, Nuzvidu, Eluru" data-district="Eluru" data-type="Open Shelter for Girls">RIDES, Open Shelter for Girls, Nuzvidu, Eluru</option>
+<option value="JMJ Open Shelter for Girls, Vijayawada, NTR" data-district="NTR" data-type="Open Shelter for Girls">JMJ Open Shelter for Girls, Vijayawada, NTR</option>
+<option value="SKCV Open Shelter for Boys, Vijayawada, NTR" data-district="NTR" data-type="Open Shelter for Boys">SKCV Open Shelter for Boys, Vijayawada, NTR</option>
+<option value="Navajeevan Balabhavan Open Shelter for Boys, Vijayawada, NTR" data-district="NTR" data-type="Open Shelter for Boys">Navajeevan Balabhavan Open Shelter for Boys, Vijayawada, NTR</option>
+<option value="Sri Venkateswara Mahila Mandali,Open Shelter for Boys, Guntur" data-district="Guntur" data-type="Open Shelter for Boys">Sri Venkateswara Mahila Mandali,Open Shelter for Boys, Guntur</option>
+    </select>
+  </div>
+</div>
+
+<label>Home Type</label>
+<input id="homeType" readonly>
+
+<div class="row">
+  <div>
+    <label>Total Population today *</label>
+    <input id="totalPopulation" type="number" min="0" required>
+  </div>
+
+  <div>
+    <label>No. of Children admission - Yesterday *</label>
+    <input id="admissionsYesterday" type="number" min="0" value="0" required>
+  </div>
+</div>
+
+<label>No. of Children released on bail - Yesterday *</label>
+<input id="releasedYesterday" type="number" min="0" value="0" required>
+
+<label>Remarks</label>
+<input id="remarks" maxlength="250" placeholder="Optional">
+
+<div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
+  <button class="btn" id="submitBtn" type="submit">Submit Daily Data</button>
+  <button class="btn secondary" id="clearBtn" type="button">Clear Entry</button>
+</div>
+
+<div class="success" id="successBox"></div>
+
+</form>
+</section>
+
+<section class="card statusCard">
+
+<div class="statusHead">
+  <div>
+    <h3 style="margin:0">Daily Submission Status</h3>
+    <div class="small" id="statusDateText"></div>
+  </div>
+
+  <button class="btn secondary" type="button" id="refreshBtn">Refresh Status</button>
+</div>
+
+<div class="chips">
+  <span class="chip" id="totalChip">Total: 23</span>
+  <span class="chip ok" id="submittedChip">Submitted: 0</span>
+  <span class="chip pending" id="pendingChip">Not Submitted: 23</span>
+  <span class="chip" id="govtChip">Govt Homes: 16</span>
+  <span class="chip" id="ngoChip">NGO Open Shelters: 7</span>
+  <span class="chip ok" id="govtStrengthChip">Govt Strength: 0</span>
+  <span class="chip ok" id="ngoStrengthChip">NGO Strength: 0</span>
+  <span class="chip" id="totalStrengthChip">Total Strength: 0</span>
+</div>
+
+<div class="tablewrap">
+<table>
+<thead>
+<tr>
+  <th>S.No.</th>
+  <th>District</th>
+  <th>Home Name</th>
+  <th>Home Type</th>
+  <th>Children Strength</th>
+  <th>Status</th>
+</tr>
+</thead>
+<tbody id="statusBody"></tbody>
+</table>
+</div>
+
+</section>
+</div>
+
+<div class="toast" id="toast"></div>
+<div class="overlay" id="overlay"><div class="loading">Submitting data…</div></div>
+
+<script>
+const FRONTEND_VERSION="2026.09.12-clean-v1";
+const BACKEND_URL="https://script.google.com/macros/s/AKfycbwmEBrC8rsRxhqvbS7hiJ6XzOdinN2kegrmBXwcPSFT63ny9nU2HZjqyxHPTv9h80Wj/exec";
+const ALL_HOMES=[{"district":"Visakhapatnam","home":"GOVT. CHILDREN HOME FOR BOYS - VISAKHAPATNAM","type":"Government Children Home for Boys"},{"district":"Eluru","home":"GOVT. CHILDREN HOME FOR BOYS - ELURU","type":"Government Children Home for Boys"},{"district":"YSR Kadapa","home":"GOVT. CHILDREN HOME FOR BOYS - YSR KADAPA","type":"Government Children Home for Boys"},{"district":"Tirupati","home":"GOVT. CHILDREN HOME FOR BOYS - TIRUPATHI","type":"Government Children Home for Boys"},{"district":"Visakhapatnam","home":"GOVT. OBSERVATION HOME FOR BOYS - VISAKHAPATNAM","type":"Government Observation Home for Boys"},{"district":"East Godavari","home":"GOVT. OBSERVATION HOME FOR BOYS - Rajahmundry","type":"Government Observation Home for Boys"},{"district":"Eluru","home":"GOVT. OBSERVATION HOME FOR BOYS (Ext) - Eluru","type":"Government Observation Home for Boys (Ext)"},{"district":"NTR","home":"GOVT. OBSERVATION HOME FOR BOYS - Vijayawada","type":"Government Observation Home for Boys"},{"district":"Tirupati","home":"GOVT. OBSERVATION HOME FOR BOYS - Tirupathi","type":"Government Observation Home for Boys"},{"district":"YSR Kadapa","home":"GOVT. OBSERVATION HOME FOR BOYS (Ext) - YSR Kadapa","type":"Government Observation Home for Boys (Ext)"},{"district":"Kurnool","home":"GOVT. OBSERVATION HOME FOR BOYS - Kurnool","type":"Government Observation Home for Boys"},{"district":"Ananthapuramu","home":"GOVT. OBSERVATION HOME FOR BOYS - Ananthapuramu","type":"Government Observation Home for Boys"},{"district":"Visakhapatnam","home":"GOVT. Special HOME FOR BOYS - VISAKHAPATNAM","type":"Government Special Home for Boys"},{"district":"Tirupati","home":"GOVT. Special HOME FOR BOYS - Tirupathi","type":"Government Special Home for Boys"},{"district":"Visakhapatnam","home":"GOVT. Spl cum CHILDREN & Observation HOME FOR Girls - VISAKHAPATNAM","type":"Government Special-cum-Children & Observation Home for Girls"},{"district":"Tirupati","home":"GOVT. Spl cum CHILDREN & Observation HOME FOR Girls - Tirupathi","type":"Government Special-cum-Children & Observation Home for Girls"},{"district":"East Godavari","home":"Shanti Welfare, Open Shelter for Boys, Kovvur, East Godavari","type":"Open Shelter for Boys"},{"district":"Eluru","home":"RIDES, Open Shelter for Boys, Nuzvidu, Eluru","type":"Open Shelter for Boys"},{"district":"Eluru","home":"RIDES, Open Shelter for Girls, Nuzvidu, Eluru","type":"Open Shelter for Girls"},{"district":"NTR","home":"JMJ Open Shelter for Girls, Vijayawada, NTR","type":"Open Shelter for Girls"},{"district":"NTR","home":"SKCV Open Shelter for Boys, Vijayawada, NTR","type":"Open Shelter for Boys"},{"district":"NTR","home":"Navajeevan Balabhavan Open Shelter for Boys, Vijayawada, NTR","type":"Open Shelter for Boys"},{"district":"Guntur","home":"Sri Venkateswara Mahila Mandali,Open Shelter for Boys, Guntur","type":"Open Shelter for Boys"}];
+
+let SUBMITTED_HOMES=new Set();
+let STATUS=null;
+const $=id=>document.getElementById(id);
+
+function today(){
+  const d=new Date();
+  const o=d.getTimezoneOffset();
+  return new Date(d.getTime()-o*60000).toISOString().slice(0,10);
+}
+
+function esc(s){
+  return String(s==null?'':s)
+    .replace(/[&<>'"]/g,c=>({
+      '&':'&amp;',
+      '<':'&lt;',
+      '>':'&gt;',
+      "'":'&#39;',
+      '"':'&quot;'
+    }[c]));
+}
+
+function toast(msg){
+  const t=$('toast');
+  t.textContent=msg;
+  t.style.display='block';
+  clearTimeout(toast._t);
+  toast._t=setTimeout(()=>t.style.display='none',4500);
+}
+
+function setService(state,text){
+  $('serviceText').textContent=text;
+  $('serviceDot').className='dotSmall '+(state||'');
+}
+
+function isInAppBrowser(){
+  const ua=navigator.userAgent||'';
+  return /WhatsApp|FBAN|FBAV|Instagram|;\s*wv\)/i.test(ua);
+}
+
+function jsonp(params,timeout=22000){
+  return new Promise((resolve,reject)=>{
+    const cb='__jwcb_'+Date.now()+'_'+Math.random().toString(36).slice(2);
+    const script=document.createElement('script');
+
+    let finished=false;
+
+    const timer=setTimeout(
+      ()=>finish(new Error('Request timed out')),
+      timeout
+    );
+
+    function finish(value,ok=false){
+      if(finished)return;
+      finished=true;
+      clearTimeout(timer);
+
+      try{delete window[cb]}catch(e){}
+
+      if(script.parentNode){
+        script.parentNode.removeChild(script);
+      }
+
+      ok?resolve(value):reject(value);
+    }
+
+    window[cb]=data=>finish(data,true);
+
+    const q=new URLSearchParams({
+      ...params,
+      callback:cb,
+      t:Date.now()
+    });
+
+    script.src=BACKEND_URL+'?'+q.toString();
+    script.async=true;
+    script.onerror=()=>finish(new Error('Unable to connect to data service'));
+
+    document.head.appendChild(script);
+  });
+}
+
+function filterHomes(){
+  const district=$('district').value;
+  const hs=$('home');
+  const current=hs.value;
+
+  hs.innerHTML='<option value="">Select Home</option>';
+
+  ALL_HOMES
+    .filter(x=>!district || x.district===district)
+    .forEach(x=>{
+      const o=new Option(x.home,x.home);
+      o.dataset.type=x.type;
+      o.dataset.district=x.district;
+      hs.add(o);
+    });
+
+  if([...hs.options].some(o=>o.value===current)){
+    hs.value=current;
+  }
+
+  setHomeType();
+}
+
+function setHomeType(){
+  const s=$('home');
+  const o=s.options[s.selectedIndex];
+
+  $('homeType').value=
+    o&&o.dataset
+      ? o.dataset.type||''
+      : '';
+
+  if(
+    s.value &&
+    SUBMITTED_HOMES.has(s.value)
+  ){
+    toast(
+      'Already submitted for the selected date. A second entry is not permitted.'
+    );
+  }
+}
+
+function clearEntry(){
+  $('home').value='';
+  $('homeType').value='';
+  $('totalPopulation').value='';
+  $('admissionsYesterday').value='0';
+  $('releasedYesterday').value='0';
+  $('remarks').value='';
+}
+
+function fallbackStatus(){
+  return {
+    date:$('date').value||today(),
+    total:23,
+    submitted:0,
+    pending:23,
+    govtStrength:0,
+    ngoStrength:0,
+    totalStrength:0,
+    homes:ALL_HOMES.map(x=>({
+      ...x,
+      submitted:false,
+      strength:''
+    }))
+  };
+}
+
+async function ping(){
+  try{
+    const r=await jsonp({api:'ping'},12000);
+
+    if(!r.ok){
+      throw new Error(r.error||'Backend error');
+    }
+
+    setService(
+      'ok',
+      'Data service online · '+(r.version||'')
+    );
+
+    return true;
+
+  }catch(e){
+    setService(
+      'bad',
+      'Data service not connected'
+    );
+
+    $('serviceWarn').style.display='block';
+
+    return false;
+  }
+}
+
+async function refreshStatus(){
+  const d=$('date').value||today();
+  $('statusDateText').textContent='Status for: '+d;
+
+  try{
+    const r=await jsonp({
+      api:'status',
+      date:d
+    });
+
+    if(!r.ok){
+      throw new Error(
+        r.error||
+        'Unable to load status'
+      );
+    }
+
+    $('serviceWarn').style.display='none';
+
+    setService(
+      'ok',
+      'Data service online · '+(r.version||'')
+    );
+
+    renderStatus(r.status);
+
+    return true;
+
+  }catch(e){
+    $('serviceWarn').style.display='block';
+
+    setService(
+      'bad',
+      'Live status unavailable'
+    );
+
+    if(!STATUS){
+      renderStatus(fallbackStatus());
+    }
+
+    return false;
+  }
+}
+
+function renderStatus(s){
+  STATUS=s;
+
+  SUBMITTED_HOMES=new Set(
+    (s.homes||[])
+      .filter(h=>h.submitted)
+      .map(h=>h.home)
+  );
+
+  $('totalChip').textContent=
+    'Total: '+s.total;
+
+  $('submittedChip').textContent=
+    'Submitted: '+s.submitted;
+
+  $('pendingChip').textContent=
+    'Not Submitted: '+s.pending;
+
+  const govt=(s.homes||[])
+    .filter(h=>!/open shelter/i.test(h.type||'')&&!/open shelter/i.test(h.home||''));
+
+  const ngo=(s.homes||[])
+    .filter(h=>/open shelter/i.test(h.type||'')||/open shelter/i.test(h.home||''));
+
+  $('govtChip').textContent=
+    'Govt Homes: '+govt.length;
+
+  $('ngoChip').textContent=
+    'NGO Open Shelters: '+ngo.length;
+
+  $('govtStrengthChip').textContent=
+    'Govt Strength: '+(s.govtStrength||0);
+
+  $('ngoStrengthChip').textContent=
+    'NGO Strength: '+(s.ngoStrength||0);
+
+  $('totalStrengthChip').textContent=
+    'Total Strength: '+(s.totalStrength||0);
+
+  const b=$('statusBody');
+  b.innerHTML='';
+
+  function addGroup(title,rows,cls,total){
+    const g=document.createElement('tr');
+    g.className='groupRow '+(cls||'');
+
+    g.innerHTML=
+      '<td colspan="6">'+
+      esc(title)+
+      ' ('+rows.length+') - Submitted Strength: <b>'+
+      total+
+      '</b></td>';
+
+    b.appendChild(g);
+
+    rows.forEach((h,i)=>{
+      const tr=document.createElement('tr');
+
+      tr.innerHTML=
+        '<td>'+(i+1)+'</td>'+
+        '<td>'+esc(h.district)+'</td>'+
+        '<td>'+esc(h.home)+'</td>'+
+        '<td>'+esc(h.type)+'</td>'+
+        '<td style="text-align:center"><b>'+
+          (
+            h.submitted &&
+            h.strength!==''
+              ? h.strength
+              : '-'
+          )+
+        '</b></td>'+
+        '<td><span class="badge '+
+          (h.submitted?'done':'wait')+
+          '">'+
+          (h.submitted?'Submitted':'Not Submitted')+
+        '</span></td>';
+
+      b.appendChild(tr);
+    });
+  }
+
+  addGroup(
+    'GOVERNMENT HOMES',
+    govt,
+    '',
+    s.govtStrength||0
+  );
+
+  addGroup(
+    'NGO RUN OPEN SHELTERS',
+    ngo,
+    'ngo',
+    s.ngoStrength||0
+  );
+}
+
+async function submitForm(e){
+  e.preventDefault();
+
+  $('successBox').style.display='none';
+
+  const payload={
+    api:'submit',
+    email:$('email').value.trim(),
+    date:$('date').value,
+    district:$('district').value,
+    home:$('home').value,
+    homeType:$('homeType').value,
+    totalPopulation:$('totalPopulation').value,
+    admissionsYesterday:$('admissionsYesterday').value,
+    releasedYesterday:$('releasedYesterday').value,
+    remarks:$('remarks').value.trim()
+  };
+
+  if(
+    !payload.email ||
+    !payload.date ||
+    !payload.district ||
+    !payload.home
+  ){
+    toast(
+      'Please complete all required fields.'
+    );
+    return;
+  }
+
+  if(
+    SUBMITTED_HOMES.has(payload.home)
+  ){
+    toast(
+      'This Home has already submitted for the selected date.'
+    );
+    return;
+  }
+
+  $('submitBtn').disabled=true;
+  $('overlay').style.display='flex';
+
+  try{
+    const r=await jsonp(
+      payload,
+      30000
+    );
+
+    if(!r.ok){
+      throw new Error(
+        r.error||
+        r.message||
+        'Submission failed'
+      );
+    }
+
+    $('successBox').textContent=
+      r.message||
+      'Data submitted successfully.';
+
+    $('successBox').style.display='block';
+
+    setService(
+      'ok',
+      'Data service online · '+(r.version||'')
+    );
+
+    clearEntry();
+
+    await refreshStatus();
+
+    toast(
+      'Data submitted successfully.'
+    );
+
+  }catch(err){
+    const msg=
+      err&&err.message
+        ? err.message
+        : String(err);
+
+    setService(
+      'bad',
+      'Submission service not connected'
+    );
+
+    if(isInAppBrowser()){
+      $('chromeHelp').style.display='block';
+    }
+
+    toast(msg);
+
+  }finally{
+    $('overlay').style.display='none';
+    $('submitBtn').disabled=false;
+  }
+}
+
+function init(){
+  $('date').value=today();
+
+  $('district')
+    .addEventListener(
+      'change',
+      filterHomes
+    );
+
+  $('home')
+    .addEventListener(
+      'change',
+      setHomeType
+    );
+
+  $('date')
+    .addEventListener(
+      'change',
+      refreshStatus
+    );
+
+  $('refreshBtn')
+    .addEventListener(
+      'click',
+      refreshStatus
+    );
+
+  $('clearBtn')
+    .addEventListener(
+      'click',
+      clearEntry
+    );
+
+  $('entryForm')
+    .addEventListener(
+      'submit',
+      submitForm
+    );
+
+  // Show all 23 Homes at first.
+  filterHomes();
+
+  // Status table is never blank.
+  renderStatus(fallbackStatus());
+
+  if(isInAppBrowser()){
+    $('chromeHelp').style.display='block';
+  }
+
+  ping().then(()=>refreshStatus());
+}
+
+init();
+</script>
+</body>
+</html>
