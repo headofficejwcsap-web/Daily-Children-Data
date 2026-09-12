@@ -3,36 +3,51 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Opening Daily Children's Data...</title>
-<meta http-equiv="refresh" content="0; url=https://script.google.com/macros/s/AKfycbwmEBrC8rsRxhqvbS7hiJ6XzOdinN2kegrmBXwcPSFT63ny9nU2HZjqyxHPTv9h80Wj/exec">
-<script>
-  window.location.replace("https://script.google.com/macros/s/AKfycbwmEBrC8rsRxhqvbS7hiJ6XzOdinN2kegrmBXwcPSFT63ny9nU2HZjqyxHPTv9h80Wj/exec");
-</script>
+<title>Daily Children's Data Entry</title>
 <style>
-  body {
-    margin: 0;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: Arial, Helvetica, sans-serif;
-    background: #f6f8fb;
-    color: #1f2937;
-  }
-  .box {
-    text-align: center;
-    padding: 24px;
-  }
-  a {
-    color: #1d4ed8;
-    font-weight: 700;
-  }
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f5f7fb;color:#1f2937}.top{background:#0f4c81;color:#fff;padding:18px 20px}.top h1{margin:0;font-size:23px}.top p{margin:5px 0 0;font-size:13px;opacity:.92}.wrap{max-width:1180px;margin:22px auto;padding:0 14px}.card{background:#fff;border:1px solid #e1e7ef;border-radius:14px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,.04)}.statusCard{margin-top:18px}.notice{padding:11px 13px;background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af;border-radius:9px;font-size:13px;line-height:1.45;margin-bottom:10px}.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}label{display:block;margin:12px 0 6px;font-weight:700}input,select,textarea{width:100%;padding:11px;border:1px solid #cbd5e1;border-radius:8px;background:#fff;font-size:15px}input[readonly]{background:#f3f4f6}.btn{border:0;border-radius:9px;padding:12px 18px;font-weight:700;cursor:pointer;background:#1d4ed8;color:#fff}.btn.secondary{background:#eef2ff;color:#1d4ed8}.btn:disabled{opacity:.55;cursor:not-allowed}.statusHead{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}.chips{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.chip{padding:7px 10px;border-radius:999px;font-size:13px;font-weight:700;background:#f3f4f6}.chip.ok{background:#dcfce7;color:#166534}.chip.pending{background:#fee2e2;color:#991b1b}.tablewrap{overflow:auto;max-height:570px;border:1px solid #e5e7eb;border-radius:9px}table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:9px;border-bottom:1px solid #e5e7eb;text-align:left;vertical-align:top}th{background:#f3f4f6;position:sticky;top:0;z-index:2}.badge{display:inline-block;padding:5px 8px;border-radius:999px;font-size:11px;font-weight:700}.done{background:#dcfce7;color:#166534}.wait{background:#fee2e2;color:#991b1b}.groupRow td{background:#eaf2ff;color:#1e3a8a;font-weight:700;border-top:2px solid #93c5fd}.groupRow.ngo td{background:#f0fdf4;color:#166534;border-top-color:#86efac}.small{font-size:12px;color:#6b7280}.toast{position:fixed;right:18px;bottom:18px;max-width:420px;background:#111827;color:#fff;padding:13px 16px;border-radius:10px;display:none;z-index:50;line-height:1.4}.overlay{position:fixed;inset:0;background:rgba(15,23,42,.42);display:none;align-items:center;justify-content:center;z-index:40}.loading{background:#fff;border-radius:12px;padding:20px 24px;font-weight:700}.success{background:#ecfdf5;border:1px solid #a7f3d0;color:#065f46;padding:12px;border-radius:9px;margin-top:12px;display:none}@media(max-width:700px){.row{grid-template-columns:1fr}.wrap{margin:12px auto}.top h1{font-size:20px}th,td{font-size:12px;padding:7px}}
 </style>
 </head>
 <body>
-  <div class="box">
-    <p>Opening Daily Children's Data Entry...</p>
-    <p>If it does not open automatically, <a href="https://script.google.com/macros/s/AKfycbwmEBrC8rsRxhqvbS7hiJ6XzOdinN2kegrmBXwcPSFT63ny9nU2HZjqyxHPTv9h80Wj/exec">click here</a>.</p>
-  </div>
-</body>
-</html>
+<div class="top"><h1>Daily Children's Data Entry</h1><p>Juvenile Welfare, Correctional Services & Welfare of Street Children, A.P.</p></div>
+<div class="wrap">
+<section class="card">
+<div class="notice"><b>One submission per Home per date.</b> Enter today's total population and yesterday's admissions / releases. A confirmation email will be sent to the entered email address after successful submission.</div>
+<form id="entryForm">
+<div class="row"><div><label>Email *</label><input id="email" type="email" required autocomplete="email"></div><div><label>Date *</label><input id="date" type="date" required></div></div>
+<div class="row"><div><label>District *</label><select id="district" required><option value="">Select District</option></select></div><div><label>Home Name *</label><select id="home" required><option value="">Select Home</option></select></div></div>
+<label>Home Type</label><input id="homeType" readonly>
+<div class="row"><div><label>Total Population today *</label><input id="totalPopulation" type="number" min="0" required></div><div><label>No. of Children admission - Yesterday *</label><input id="admissionsYesterday" type="number" min="0" value="0" required></div></div>
+<label>No. of Children released on bail - Yesterday *</label><input id="releasedYesterday" type="number" min="0" value="0" required>
+<label>Remarks</label><input id="remarks" placeholder="Optional">
+<div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap"><button class="btn" id="submitBtn" type="submit">Submit Daily Data</button><button class="btn secondary" id="clearBtn" type="button">Clear Entry</button></div>
+<div class="success" id="successBox"></div>
+</form>
+</section>
+<section class="card statusCard">
+<div class="statusHead"><div><h3 style="margin:0">Daily Submission Status</h3><div class="small" id="statusDateText"></div></div><button class="btn secondary" type="button" id="refreshBtn">Refresh Status</button></div>
+<div class="chips"><span class="chip" id="totalChip">Total: 23</span><span class="chip ok" id="submittedChip">Submitted: 0</span><span class="chip pending" id="pendingChip">Not Submitted: 23</span><span class="chip" id="govtChip">Govt Homes: 16</span><span class="chip" id="ngoChip">NGO Open Shelters: 7</span><span class="chip ok" id="govtStrengthChip">Govt Strength: 0</span><span class="chip ok" id="ngoStrengthChip">NGO Strength: 0</span><span class="chip" id="totalStrengthChip">Total Strength: 0</span></div>
+<div class="tablewrap"><table><thead><tr><th>S.No.</th><th>District</th><th>Home Name</th><th>Home Type</th><th>Children Strength</th><th>Status</th></tr></thead><tbody id="statusBody"></tbody></table></div>
+</section>
+</div>
+<div class="toast" id="toast"></div><div class="overlay" id="overlay"><div class="loading">Submitting data…</div></div>
+<script>
+const BACKEND_URL='https://script.google.com/macros/s/AKfycbwmEBrC8rsRxhqvbS7hiJ6XzOdinN2kegrmBXwcPSFT63ny9nU2HZjqyxHPTv9h80Wj/exec';
+let ALL_HOMES=[];let SUBMITTED_HOMES=new Set();let STATUS=null;
+const $=id=>document.getElementById(id);
+function today(){const d=new Date();const o=d.getTimezoneOffset();return new Date(d.getTime()-o*60000).toISOString().slice(0,10)}
+function esc(s){return String(s==null?'':s).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
+function toast(msg){const t=$('toast');t.textContent=msg;t.style.display='block';clearTimeout(toast._t);toast._t=setTimeout(()=>t.style.display='none',4200)}
+function jsonp(params,timeout=15000){return new Promise((resolve,reject)=>{const cb='__jwcb_'+Date.now()+'_'+Math.random().toString(36).slice(2);const script=document.createElement('script');const timer=setTimeout(()=>done(new Error('Request timed out')),timeout);function done(v,ok=false){clearTimeout(timer);delete window[cb];script.remove();ok?resolve(v):reject(v)}window[cb]=data=>done(data,true);const q=new URLSearchParams({...params,callback:cb,t:Date.now()});script.src=BACKEND_URL+'?'+q.toString();script.onerror=()=>done(new Error('Unable to connect to the data service'));document.head.appendChild(script)})}
+async function loadHomes(){const r=await jsonp({api:'homes'});if(!r.ok)throw new Error(r.error||'Unable to load Homes');ALL_HOMES=r.homes||[];const ds=$('district');ds.innerHTML='<option value="">Select District</option>';[...new Set(ALL_HOMES.map(x=>x.district).filter(Boolean))].sort().forEach(d=>ds.add(new Option(d,d)))}
+function filterHomes(){const d=$('district').value;const hs=$('home');hs.innerHTML='<option value="">Select Home</option>';ALL_HOMES.filter(x=>x.district===d).forEach(x=>{const o=new Option(x.home,x.home);o.dataset.type=x.type;hs.add(o)});$('homeType').value=''}
+function homeChanged(){const s=$('home'),o=s.options[s.selectedIndex];$('homeType').value=o&&o.dataset?o.dataset.type||'':'';if(s.value&&SUBMITTED_HOMES.has(s.value))toast('Already submitted for the selected date. A second entry is not permitted.')}
+async function refreshStatus(){const d=$('date').value||today();$('statusDateText').textContent='Status for: '+d;try{const r=await jsonp({api:'status',date:d});if(!r.ok)throw new Error(r.error||'Unable to load status');renderStatus(r.status)}catch(e){toast(e.message||e)}}
+function renderStatus(s){STATUS=s;SUBMITTED_HOMES=new Set((s.homes||[]).filter(h=>h.submitted).map(h=>h.home));$('totalChip').textContent='Total: '+s.total;$('submittedChip').textContent='Submitted: '+s.submitted;$('pendingChip').textContent='Not Submitted: '+s.pending;const govt=(s.homes||[]).filter(h=>!/open shelter/i.test(h.type||'')&&!/open shelter/i.test(h.home||''));const ngo=(s.homes||[]).filter(h=>/open shelter/i.test(h.type||'')||/open shelter/i.test(h.home||''));$('govtChip').textContent='Govt Homes: '+govt.length;$('ngoChip').textContent='NGO Open Shelters: '+ngo.length;$('govtStrengthChip').textContent='Govt Strength: '+(s.govtStrength||0);$('ngoStrengthChip').textContent='NGO Strength: '+(s.ngoStrength||0);$('totalStrengthChip').textContent='Total Strength: '+(s.totalStrength||0);const b=$('statusBody');b.innerHTML='';function group(title,rows,cls,total){const g=document.createElement('tr');g.className='groupRow '+(cls||'');g.innerHTML='<td colspan="6">'+esc(title)+' ('+rows.length+') - Submitted Strength: <b>'+total+'</b></td>';b.appendChild(g);rows.forEach((h,i)=>{const tr=document.createElement('tr');tr.innerHTML='<td>'+(i+1)+'</td><td>'+esc(h.district)+'</td><td>'+esc(h.home)+'</td><td>'+esc(h.type)+'</td><td style="text-align:center"><b>'+(h.submitted&&h.strength!==''?h.strength:'-')+'</b></td><td><span class="badge '+(h.submitted?'done':'wait')+'">'+(h.submitted?'Submitted':'Not Submitted')+'</span></td>';b.appendChild(tr)})}group('GOVERNMENT HOMES',govt,'',s.govtStrength||0);group('NGO RUN OPEN SHELTERS',ngo,'ngo',s.ngoStrength||0)}
+function clearEntry(){$('home').value='';$('homeType').value='';$('totalPopulation').value='';$('admissionsYesterday').value='0';$('releasedYesterday').value='0';$('remarks').value=''}
+async function waitForSubmission(home,date){for(let i=0;i<10;i++){await new Promise(r=>setTimeout(r,i===0?1500:1000));const r=await jsonp({api:'status',date});if(r.ok){renderStatus(r.status);const h=(r.status.homes||[]).find(x=>x.home===home);if(h&&h.submitted)return h}}return null}
+async function submit(e){e.preventDefault();$('successBox').style.display='none';const home=$('home').value,date=$('date').value;if(SUBMITTED_HOMES.has(home)){toast('This Home has already submitted for the selected date.');return}const payload={email:$('email').value.trim(),date,district:$('district').value,home,homeType:$('homeType').value,totalPopulation:$('totalPopulation').value,admissionsYesterday:$('admissionsYesterday').value,releasedYesterday:$('releasedYesterday').value,remarks:$('remarks').value.trim()};if(!payload.email||!payload.date||!payload.district||!payload.home){toast('Please complete all required fields.');return}$('submitBtn').disabled=true;$('overlay').style.display='flex';try{await fetch(BACKEND_URL,{method:'POST',mode:'no-cors',cache:'no-store',headers:{'Content-Type':'text/plain;charset=UTF-8'},body:JSON.stringify(payload)});const confirmed=await waitForSubmission(home,date);if(!confirmed)throw new Error('Submission could not be confirmed. Please refresh the status before trying again.');$('successBox').textContent='Submitted successfully. Confirmation email is being sent to '+payload.email+'.';$('successBox').style.display='block';clearEntry();toast('Data submitted successfully.')}catch(err){toast(err.message||String(err))}finally{$('overlay').style.display='none';$('submitBtn').disabled=false}}
+async function init(){$('date').value=today();$('district').addEventListener('change',filterHomes);$('home').addEventListener('change',homeChanged);$('date').addEventListener('change',refreshStatus);$('refreshBtn').addEventListener('click',refreshStatus);$('clearBtn').addEventListener('click',clearEntry);$('entryForm').addEventListener('submit',submit);try{await loadHomes();await refreshStatus()}catch(e){toast(e.message||e)}}
+init();
+</script>
+</body></html>
