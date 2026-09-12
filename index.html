@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily Children's Data Entry</title>
+<style>
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;font-family:Arial,Helvetica,sans-serif;background:#f6f8fb;color:#1f2937}
+  .app{height:100%;display:flex;flex-direction:column}
+  .topbar{
+    background:#ffffff;border-bottom:1px solid #e5e7eb;padding:12px 16px;
+    display:flex;align-items:center;gap:12px;flex-wrap:wrap
+  }
+  .title{font-size:18px;font-weight:700}
+  .sub{font-size:12px;color:#6b7280}
+  .spacer{flex:1}
+  .btn{
+    border:0;border-radius:8px;padding:9px 12px;cursor:pointer;
+    font-weight:700;background:#2563eb;color:#fff;text-decoration:none
+  }
+  .btn.secondary{background:#eef2ff;color:#1d4ed8}
+  .notice{
+    margin:10px 12px 0;padding:10px 12px;background:#eff6ff;color:#1e40af;
+    border:1px solid #bfdbfe;border-radius:10px;font-size:13px
+  }
+  .framewrap{flex:1;min-height:0;padding:10px 12px 12px}
+  iframe{
+    width:100%;height:100%;border:1px solid #d1d5db;border-radius:12px;background:white
+  }
+  .fallback{
+    display:none;max-width:680px;margin:30px auto;background:#fff;border:1px solid #e5e7eb;
+    border-radius:14px;padding:22px;box-shadow:0 4px 15px rgba(0,0,0,.06);text-align:center
+  }
+  .fallback h3{margin-top:0}
+  .small{font-size:12px;color:#6b7280;margin-top:10px}
+  @media(max-width:640px){
+    .topbar{padding:10px}
+    .framewrap{padding:8px}
+    .title{font-size:16px}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div>
+      <div class="title">Daily Children's Data Entry</div>
+      <div class="sub">Juvenile Welfare - Daily Home Submission</div>
+    </div>
+    <div class="spacer"></div>
+    <a class="btn secondary" href="https://script.google.com/macros/s/AKfycbx3yZC_dSNthFcX-crFjg5Qy2JG8vtO6eLgT1IOtx7r7Y9TPEseU4-pARXPKsgUE8Sw/exec" target="_blank" rel="noopener">Open Directly</a>
+    <button class="btn" onclick="reloadApp()">Refresh Form</button>
+  </div>
+
+  <div class="notice">
+    This is the public wrapper page for the Daily Children's Data application.
+    If the embedded form does not load, use the <b>Open Directly</b> button.
+  </div>
+
+  <div class="framewrap">
+    <iframe
+      id="appFrame"
+      src="https://script.google.com/macros/s/AKfycbx3yZC_dSNthFcX-crFjg5Qy2JG8vtO6eLgT1IOtx7r7Y9TPEseU4-pARXPKsgUE8Sw/exec"
+      allow="clipboard-read; clipboard-write"
+      referrerpolicy="no-referrer-when-downgrade">
+    </iframe>
+  </div>
+
+  <div class="fallback" id="fallback">
+    <h3>Form could not be displayed here</h3>
+    <p>Please use the button below to open the Daily Children's Data Entry page.</p>
+    <a class="btn" href="https://script.google.com/macros/s/AKfycbx3yZC_dSNthFcX-crFjg5Qy2JG8vtO6eLgT1IOtx7r7Y9TPEseU4-pARXPKsgUE8Sw/exec" target="_blank" rel="noopener">Open Data Entry Form</a>
+    <div class="small">If Google redirects to Drive, copy the link and paste it directly in Chrome.</div>
+  </div>
+</div>
+
+<script>
+function reloadApp(){
+  const f=document.getElementById('appFrame');
+  f.src='https://script.google.com/macros/s/AKfycbx3yZC_dSNthFcX-crFjg5Qy2JG8vtO6eLgT1IOtx7r7Y9TPEseU4-pARXPKsgUE8Sw/exec' + '?t=' + Date.now();
+}
+
+let loaded=false;
+const frame=document.getElementById('appFrame');
+frame.addEventListener('load',()=>{loaded=true;});
+setTimeout(()=>{
+  if(!loaded){
+    document.querySelector('.framewrap').style.display='none';
+    document.getElementById('fallback').style.display='block';
+  }
+},12000);
+</script>
+</body>
+</html>
