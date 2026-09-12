@@ -1,41 +1,40 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Daily Children's Data</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily Children's Data Entry</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f5f7fb;color:#1f2937}
-.wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:22px}
-.card{width:min(680px,100%);background:#fff;border:1px solid #e5e7eb;border-radius:18px;padding:28px;box-shadow:0 10px 30px rgba(0,0,0,.08);text-align:center}
-h1{font-size:25px;margin:0 0 8px}
-p{line-height:1.55;color:#4b5563}
-.btn{display:block;width:100%;padding:14px 16px;margin-top:14px;border:0;border-radius:10px;text-decoration:none;font-weight:700;font-size:16px;cursor:pointer}
-.primary{background:#1d4ed8;color:#fff}
-.secondary{background:#eef2ff;color:#1d4ed8}
-.small{font-size:12px;color:#6b7280;margin-top:18px}
-.code{word-break:break-all;background:#f9fafb;border:1px solid #e5e7eb;padding:10px;border-radius:8px;font-size:12px;text-align:left;margin-top:14px}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:linear-gradient(180deg,#eef4fb,#f8fafc);color:#1f2937}
+.page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+.card{width:min(720px,100%);background:#fff;border:1px solid #dbe3ec;border-radius:18px;box-shadow:0 12px 32px rgba(0,0,0,.08);overflow:hidden}
+.header{background:#0f4c81;color:#fff;padding:24px;text-align:center}
+.header h1{margin:0;font-size:25px;line-height:1.3}
+.header p{margin:8px 0 0;opacity:.92;font-size:14px}
+.content{padding:26px;text-align:center}
+.content h2{margin:0 0 10px;font-size:21px}
+.content p{margin:0 0 20px;line-height:1.55;color:#4b5563}
+.btn{display:inline-block;width:100%;padding:15px 18px;background:#1d4ed8;color:#fff;text-decoration:none;border-radius:10px;font-size:17px;font-weight:700}
+.btn:hover{background:#1e40af}
+.note{margin-top:18px;padding:12px 14px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;color:#1e40af;font-size:13px;line-height:1.5}
+.footer{text-align:center;padding:14px 18px;border-top:1px solid #edf1f5;color:#6b7280;font-size:12px}
 </style>
 </head>
 <body>
-<div class="wrap">
+<div class="page">
   <div class="card">
-    <h1>Daily Children's Data Entry</h1>
-    <p>Use the button below to open the daily submission application.</p>
-
-    <a class="btn primary" href="https://script.google.com/a/*/macros/s/AKfycbx3yZC_dSNthFcX-crFjg5Qy2JG8vtO6eLgT1IOtx7r7Y9TPEseU4-pARXPKsgUE8Sw/exec" target="_top" rel="noopener">
-      Open Daily Data Entry
-    </a>
-
-    <a class="btn secondary" href="https://script.google.com/macros/s/AKfycbx3yZC_dSNthFcX-crFjg5Qy2JG8vtO6eLgT1IOtx7r7Y9TPEseU4-pARXPKsgUE8Sw/exec" target="_top" rel="noopener">
-      Standard Link (Fallback)
-    </a>
-
-    <div class="small">
-      The first button uses Google's multi-account compatible Apps Script URL.
-      This page intentionally does not embed the Google app in an iframe.
+    <div class="header">
+      <h1>Daily Children's Data Entry</h1>
+      <p>Juvenile Welfare, Correctional Services & Welfare of Street Children, A.P.</p>
     </div>
+    <div class="content">
+      <h2>Daily Home Submission</h2>
+      <p>Click the button below to open the Daily Children's Data Entry application.</p>
+      <a class="btn" href="https://script.google.com/a/*/macros/s/AKfycbx3yZC_dSNthFcX-crFjg5Qy2JG8vtO6eLgT1IOtx7r7Y9TPEseU4-pARXPKsgUE8Sw/exec" target="_top" rel="noopener">Open Daily Data Entry</a>
+      <div class="note">Use this page only for daily data entry. The Master View remains separate and private.</div>
+    </div>
+    <div class="footer">Government & NGO Home Daily Reporting</div>
   </div>
 </div>
 </body>
